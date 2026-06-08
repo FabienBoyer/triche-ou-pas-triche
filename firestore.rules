@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} { allow read, write: if false; }
+
+    function isValidId(id) { 
+        return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function incoming() { return request.resource.data; }
+
+    match /sessions/{sessionId} {
+      allow get: if isValidId(sessionId);
+      allow create: if isValidId(sessionId) 
+                    && incoming().keys().hasAll(['createdAt'])
+                    && incoming().keys().size() == 1
+                    && incoming().createdAt == request.time;
+      
+      match /responses/{responseId} {
+        allow list: if isValidId(sessionId);
+        allow create: if isValidId(sessionId)
+                    && isValidId(responseId)
+                    && incoming().keys().hasAll(['answers', 'createdAt'])
+                    && incoming().keys().size() == 2
+                    && incoming().createdAt == request.time
+                    && incoming().answers is list
+                    && incoming().answers.size() == 10;
+      }
+    }
+  }
+}

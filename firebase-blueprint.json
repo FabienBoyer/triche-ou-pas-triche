@@ -1,0 +1,35 @@
+{
+  "entities": {
+    "Session": {
+      "title": "Session",
+      "description": "A group session to aggregate answers.",
+      "type": "object",
+      "properties": {
+        "createdAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["createdAt"]
+    },
+    "Response": {
+      "title": "Response",
+      "description": "A participant's full set of answers for a session.",
+      "type": "object",
+      "properties": {
+        "answers": {
+          "type": "array"
+        },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["answers", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/Session" },
+      "description": "Group sessions"
+    },
+    "/sessions/{sessionId}/responses/{responseId}": {
+      "schema": { "$ref": "#/entities/Response" },
+      "description": "Responses for a specific session"
+    }
+  }
+}
