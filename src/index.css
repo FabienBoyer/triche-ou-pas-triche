@@ -6,6 +6,7 @@ input[type="range"].custom-slider {
   height: 8px;
   border-radius: 4px;
   outline: none;
+  touch-action: none;
 }
 
 input[type="range"].custom-slider::-webkit-slider-thumb {
